@@ -32,7 +32,7 @@
                             "protocol": "TCP",
                             "sourcePortRange": "*",
                             "destinationPortRange": "5432",
-                            "sourceAddressPrefix": "109.66.55.220",
+                            "sourceAddressPrefix": "10.0.1.0/24",
                             "destinationAddressPrefix": "*",
                             "access": "Allow",
                             "priority": 100,
@@ -89,7 +89,7 @@
                 "protocol": "TCP",
                 "sourcePortRange": "*",
                 "destinationPortRange": "5432",
-                "sourceAddressPrefix": "109.66.55.220",
+                "sourceAddressPrefix": "10.0.1.0/24",
                 "destinationAddressPrefix": "*",
                 "access": "Allow",
                 "priority": 100,
@@ -126,26 +126,11 @@
             }
         },
         {
-            "type": "Microsoft.Network/virtualNetworks/subnets",
-            "apiVersion": "2023-04-01",
-            "name": "[concat(parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), '/default')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]"
-            ],
-            "properties": {
-                "addressPrefix": "10.0.0.0/24",
-                "delegations": [],
-                "privateEndpointNetworkPolicies": "Disabled",
-                "privateLinkServiceNetworkPolicies": "Enabled"
-            }
-        },
-        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-04-01",
             "name": "[parameters('virtualNetworks_vn_pennystock_dev_westuk_name')]",
             "location": "ukwest",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_WebNSG_pennystock_dev_westuk_name'))]",
                 "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
             ],
             "properties": {
@@ -171,12 +156,12 @@
                         "type": "Microsoft.Network/virtualNetworks/subnets"
                     },
                     {
-                        "name": "WebSubnet",
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), 'WebSubnet')]",
+                        "name": "DBSubnet",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), 'DBSubnet')]",
                         "properties": {
-                            "addressPrefix": "10.0.1.0/24",
+                            "addressPrefix": "10.0.2.0/24",
                             "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_WebNSG_pennystock_dev_westuk_name'))]"
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
                             },
                             "serviceEndpoints": [],
                             "delegations": [],
@@ -186,13 +171,10 @@
                         "type": "Microsoft.Network/virtualNetworks/subnets"
                     },
                     {
-                        "name": "DBSubnet",
-                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), 'DBSubnet')]",
+                        "name": "WebSubnet",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), 'WebSubnet')]",
                         "properties": {
-                            "addressPrefix": "10.0.2.0/24",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
-                            },
+                            "addressPrefix": "10.0.1.0/24",
                             "serviceEndpoints": [],
                             "delegations": [],
                             "privateEndpointNetworkPolicies": "Disabled",
@@ -208,17 +190,12 @@
         {
             "type": "Microsoft.Network/virtualNetworks/subnets",
             "apiVersion": "2023-04-01",
-            "name": "[concat(parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), '/DBSubnet')]",
+            "name": "[concat(parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), '/default')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]"
             ],
             "properties": {
-                "addressPrefix": "10.0.2.0/24",
-                "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
-                },
-                "serviceEndpoints": [],
+                "addressPrefix": "10.0.0.0/24",
                 "delegations": [],
                 "privateEndpointNetworkPolicies": "Disabled",
                 "privateLinkServiceNetworkPolicies": "Enabled"
@@ -229,13 +206,28 @@
             "apiVersion": "2023-04-01",
             "name": "[concat(parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), '/WebSubnet')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]",
-                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_WebNSG_pennystock_dev_westuk_name'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]"
             ],
             "properties": {
                 "addressPrefix": "10.0.1.0/24",
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2023-04-01",
+            "name": "[concat(parameters('virtualNetworks_vn_pennystock_dev_westuk_name'), '/DBSubnet')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vn_pennystock_dev_westuk_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.2.0/24",
                 "networkSecurityGroup": {
-                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_WebNSG_pennystock_dev_westuk_name'))]"
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DBNSG_pennystock_dev_westuk_name'))]"
                 },
                 "serviceEndpoints": [],
                 "delegations": [],
