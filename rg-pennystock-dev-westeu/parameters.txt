@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworks_vn_pennystock_dev_westeu_name": {
+            "value": null
+        },
+        "networkSecurityGroups_DBNSG_pennystock_dev_westeu_name": {
+            "value": null
+        },
+        "networkSecurityGroups_WebNSG_pennystock_dev_westeu_name": {
+            "value": null
+        }
+    }
+}
